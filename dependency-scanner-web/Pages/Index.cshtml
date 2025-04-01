@@ -1,0 +1,65 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Search";
+}
+<form method="get">
+    <h1 class="govuk-heading-xl">Search Dependencies</h1>
+    <span class="govuk-body">Please enter the dependency you wish to check for.</span>
+    <input type="text" class="govuk-input" name="dependency" />
+    <br /><br />
+    <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
+        Search
+        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+        </svg>
+    </button>
+    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Important
+        </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+        <p class="govuk-body">
+            This tool does not check the following repositories at this stage.<br/>
+            automated-testing, chips-tuxedo-proxy, chl-java-ebr, chs-test-automation, cics, document-generator, felixvalidator, forms-enablement-auto-testing
+HtmlToPdfConverterTestTool, LetterGenerator, specs.developer.ch.gov.uk, taf-scrs, taf-webfiling, taf-webinc, taf-xml, web-dissolution, xml-gateway-testing           
+        </p>
+        </div>
+    </div>
+</form>
+
+@if(Model._searchResults.Any())
+{ 
+    <h2 class="govuk-heading-m">Results</h2>
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">(@Model._searchResults.Count()) Relevant Dependencies Found</caption>
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Repository</th>
+                <th scope="col" class="govuk-table__header">Dependency Tree</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">(@(Model._searchResults.Select(x=>x.Repository).Distinct().Count())) Relevant Repositories</th>
+                <td class="govuk-table__cell">
+                    <ul>
+                        @foreach(String x in Model._searchResults.Select(x=>x.Repository).Distinct())
+                        {
+                            <li>@x</li>
+                        }
+                    </ul>    
+                </td>
+            </tr>
+            @foreach(Models.SearchResult x in Model._searchResults)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@x.Repository</th>
+                        <td class="govuk-table__cell">@Html.Raw(x.DependencyTree)</td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+}
